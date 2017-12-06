@@ -1,4 +1,7 @@
 
+eval `ssh-agent`
+ssh-add
+
 # Various ways to connect to a machine via ssh
 # PEI-Genesis connections
 alias con=sshConnect
