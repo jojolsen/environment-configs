@@ -60,6 +60,8 @@ alias errlog="cd /var/log/apache2/"
 #export EDITOR=/usr/bin/vim
 #export EDITOR=/usr/bin/mcedit
 
+alias cdperl="cd /c/Perl/"
+
 changeDirWithExtraCommand() {
 	cd $1; # Do the directory change
 	eval $2; # Evaulate the second string of args as 1 argument
@@ -91,19 +93,36 @@ changeDir() {
 	fi
 }
 
+sshConnect() {
+	# Arg 1 is the hostname
+	# Arg 2 is the username
+	if [ "$#" == 2 ];
+	then
+		echo "Connecting to $2@$1 ..." # Host and user passed in - connect to arg2@arg1 (username@hostname)
+		ssh $2@$1;
+	elif [ "$#" == 1 ];
+	then
+		if [[ $1 = "h" || $1 == "help"  || $1 == "?" ]]
+		then
+			printf "\n+------------------------------+\n|-- SSHCONNECT SHORTCUT HELP --|\n+------------------------------+\n\n@param1: hostname\n@param2: username\n\nDefault hostname: d1-wapp01\nDefault username: jdunham\n\nExamples:\n$ con super-fun-host02 coolGuy1\n$ Connecting to coolGuy1@super-fun-host02 ...\n\n$ con crazy-awesome-host01\n$ Connecting to jdunham@crazy-awesome-host01 ...\n\n$ con\n$ Connecting to jdunham@d1-wapp01 ...\n\n"
+		else
+			echo "Connecting to jdunham@$1 ..." # Only host is passed in - connect to jdunham@arg1 (defaultUser@hostname)
+			ssh jdunham@$1;
+		fi
+	elif [ "$#" == 0 ];
+	then
+		echo "Connecting to jdunham@d1-wapp01 ..." # Nothing passed in - connect to jdunham@d1-wapp01 (defaultUser@defaultHost)
+		ssh jdunham@d1-wapp01;
+		
+	else
+		echo "Error in SSH Connect: Illegal number of parameters" # More than 2 args passed in - not valid.
+	fi
+}
+
 changeToGitDirectory() {
 	cd /c/git/
 	lst
 }	
-
-sshConnect() {
-	if [ -z ${1+x} ] # If the first argument is not there, just connect to the default box (jdunham@d1-wapp01)
-	then
-		ssh jdunham@d1-wapp01;
-	else # Else, connect to whatever box the user passed in as the argument
-		ssh jdunham@$1;
-	fi
-}
 
 listContentsGrep() {
 	$1 | grep $2
